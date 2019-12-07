@@ -1,0 +1,15 @@
+# Build folder
+dist
+
+# Application packages
+node_modules
+
+# Environment variables
+.env
+
+# Misc files and folder
+.DS_Store
+.vscode
+
+# Log files
+*.log
