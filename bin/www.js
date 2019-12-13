@@ -4,7 +4,7 @@ import app from 'config/app';
 require('dotenv').config();
 
 // Event listener for HTTP server "error" event
-const onError = (error) => {
+const onError = error => {
   if (error.syscall !== 'listen') throw error;
 
   // Handle specific listen errors

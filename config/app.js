@@ -1,7 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import { json, urlencoded } from 'body-parser';
-// const cors = require('cors');
 import helmet from 'helmet';
 import Boom from '@hapi/boom';
 // const { requestLogger, errorLogger } = require('./logger');
@@ -10,8 +9,6 @@ import { globalRouter, v1 } from './routes/index';
 
 const app = express();
 
-// app.use(cors());
-// app.options('*', cors());
 app.use(helmet());
 app.use(cookieParser());
 app.use(json());

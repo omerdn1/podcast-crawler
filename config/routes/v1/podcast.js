@@ -1,12 +1,17 @@
 import { Router } from 'express';
-import { validPodcastURL, getBase64AudioFromURL } from 'app/v1/middleware';
+import { joiValidator } from 'app/v1/controllers';
+import { schemas, getBase64AudioFromURL } from 'app/v1/controllers/podcast';
 import { podcast } from 'app/v1/modules';
 
 const podcastRouter = Router();
-
-podcastRouter.get('/feed', validPodcastURL, podcast.getPodcastFeed);
+podcastRouter.get(
+  '/feed',
+  joiValidator.query(schemas.feedSchema),
+  podcast.getPodcastFeed,
+);
 podcastRouter.get(
   '/transcribe',
+  joiValidator.query(schemas.transcribeSchema),
   getBase64AudioFromURL,
   podcast.transcribeEpisode,
 );
