@@ -1,3 +1,6 @@
-import joiValidator from './joiValidator';
+import podcast from './podcast';
 
-export { joiValidator };
+export {
+  // eslint-disable-next-line import/prefer-default-export
+  podcast,
+};

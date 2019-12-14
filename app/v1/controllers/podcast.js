@@ -67,6 +67,7 @@ const transcribeEpisode = async (req, res, next) => {
       sampleRateHertz: 16000,
       languageCode: 'en-US',
       enableWordTimeOffsets: true,
+      enableAutomaticPunctuation: true,
     };
     const request = {
       audio,
