@@ -1,5 +1,4 @@
 import express from 'express';
-import OtterApi from 'otter-ai-api';
 import cookieParser from 'cookie-parser';
 import { json, urlencoded } from 'body-parser';
 import helmet from 'helmet';
@@ -7,25 +6,8 @@ import Boom from '@hapi/boom';
 // const { requestLogger, errorLogger } = require('./logger');
 import { globalRouter, v1 } from './routes/index';
 
-require('dotenv').config();
-
 const app = express();
 
-const otterApi = new OtterApi({
-  email: process.env.OTTER_EMAIL,
-  password: process.env.OTTER_PASSWORD,
-});
-
-setTimeout(async () => {
-  const speeches = await otterApi.getSpeeches();
-  speeches.forEach(async (speech, index) => {
-    const speechInfo = await otterApi.getSpeech(speech.speech_id);
-    console.log(`SPEECH #${index}:`);
-    console.log(speechInfo);
-  });
-}, 5000);
-
-// app.use(otterApi);
 app.use(helmet());
 app.use(cookieParser());
 app.use(json());

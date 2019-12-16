@@ -14,7 +14,7 @@ export default async (req, res, next) => {
     const base64File = await convertStreamToBase64Audio(response.data);
     req.base64File = base64File;
     return next();
-  } catch (error) {
-    return next(Boom.badImplementation(error));
+  } catch (err) {
+    return next(Boom.badImplementation(err));
   }
 };

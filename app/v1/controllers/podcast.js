@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
 import Parser from 'rss-parser';
-import { SpeechClient } from '@google-cloud/speech';
 import { OK } from 'http-status-codes';
 import Boom from '@hapi/boom';
+import fs from 'fs';
 import { stripQueryStringFromURL } from 'lib/URLManipulation';
+import otterApi from 'config/otterApi';
 
 const getPodcastFeed = async (req, res, next) => {
   try {
@@ -47,51 +48,38 @@ const getPodcastFeed = async (req, res, next) => {
       feed_url: feedUrl,
       episodes,
     });
-  } catch (error) {
-    return next(Boom.badImplementation(error));
+  } catch (err) {
+    return next(Boom.badImplementation(err));
   }
 };
 
-const transcribeEpisode = async (req, res, next) => {
+const getSpeeches = async (req, res, next) => {
   try {
-    const { base64File } = req;
+    const speeches = await otterApi.getSpeeches();
+    return res.status(OK).json(speeches);
+  } catch (err) {
+    return next(Boom.badImplementation(err));
+  }
+};
 
-    // Creates a speech client
-    const client = new SpeechClient();
-    const audio = {
-      // TODO: replace base64 file with GS URL
-      content: base64File,
-    };
-    const config = {
-      encoding: 'LINEAR16',
-      sampleRateHertz: 16000,
-      languageCode: 'en-US',
-      enableWordTimeOffsets: true,
-      enableAutomaticPunctuation: true,
-    };
-    const request = {
-      audio,
-      config,
-    };
+const uploadSpeech = async (req, res, next) => {
+  try {
+    const { file } = req.files;
+    const stream = fs.createReadStream(file.path);
 
-    // Detects speech in the audio file
-    const [operation] = await client.longRunningRecognize(request);
-    // Get a Promise representation of the final result of the job
-    const [response] = await operation.promise();
-    const transcription = response.results
-      .map(result => result.alternatives[0].transcript)
-      .join('\n');
-    console.log(`Transcription: ${transcription}`);
-    return res.status(OK).json({
-      transcription,
-      words: response.results[0].alternatives[0].words,
+    const response = await otterApi.uploadSpeech({
+      value: stream,
+      options: { filename: file.name },
     });
-  } catch (error) {
-    return next(Boom.badImplementation(error));
+
+    return res.status(OK).json(response);
+  } catch (err) {
+    return next(Boom.badImplementation(err));
   }
 };
 
 export default {
   getPodcastFeed,
-  transcribeEpisode,
+  getSpeeches,
+  uploadSpeech,
 };

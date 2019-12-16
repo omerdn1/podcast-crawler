@@ -1,6 +1,6 @@
 import Boom from '@hapi/boom';
 
-const joiReqProperties = ['query', 'body', 'params', 'headers'];
+const joiReqProperties = ['query', 'body', 'params', 'headers', 'files'];
 
 const DEFAULT_JOI_OPTIONS = {
   convert: true,
