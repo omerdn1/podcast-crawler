@@ -63,8 +63,8 @@ const getSpeeches = async (req, res, next) => {
 };
 
 const uploadSpeech = async (req, res, next) => {
+  const { file } = req.files;
   try {
-    const { file } = req.files;
     const stream = fs.createReadStream(file.path);
 
     const response = await otterApi.uploadSpeech({
@@ -75,6 +75,9 @@ const uploadSpeech = async (req, res, next) => {
     return res.status(OK).json(response);
   } catch (err) {
     return next(Boom.badImplementation(err));
+  } finally {
+    // Delete the file from its temporary location
+    fs.unlinkSync(file.path);
   }
 };
 
